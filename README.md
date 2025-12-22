@@ -36,11 +36,21 @@ protected $middlewareGroups = [
 ```
 
 **That's it!** Now all your requests are automatically protected from:
-- ✅ SQL Injection
-- ✅ XSS
-- ✅ Command Injection
-- ✅ Path Traversal
-- ✅ And more...
+- ✅ **SQL Injection** - Detect and prevent SQL injection attacks
+- ✅ **XSS (Cross-Site Scripting)** - Filter malicious scripts and HTML
+- ✅ **Command Injection** - Block dangerous system commands
+- ✅ **Path Traversal** - Prevent directory traversal attacks (../)
+- ✅ **CSRF (Cross-Site Request Forgery)** - Enhanced CSRF protection with token rotation
+- ✅ **XXE (XML External Entity)** - Protect against XML external entity attacks
+- ✅ **SSRF (Server-Side Request Forgery)** - Block internal network access
+- ✅ **IDOR (Insecure Direct Object Reference)** - Validate resource ownership
+- ✅ **File Upload Attacks** - Secure file validation with MIME type checking
+- ✅ **Brute Force Attacks** - Account lockout after failed attempts
+- ✅ **Rate Limiting** - Prevent API abuse and DDoS
+- ✅ **Security Headers** - Automatic CSP, HSTS, X-Frame-Options, etc.
+- ✅ **Input Sanitization** - Clean all user inputs automatically
+- ✅ **IP Blocking** - Auto-block malicious IPs
+- ✅ **Security Monitoring** - Log and track all security threats
 
 ### Method 2: Using Helper Functions (Very Simple)
 
@@ -91,17 +101,64 @@ Security::recordFailedLogin($email);
 Security::clearFailedLogins($email);
 ```
 
-## 📋 Features
+## 📋 Complete Features List
 
-- ✅ **Automatic Protection** - Just add one middleware!
-- ✅ **SQL Injection Protection** - Detect and prevent SQL injection attacks
-- ✅ **XSS Protection** - Protection against Cross-Site Scripting
-- ✅ **File Upload Security** - Secure file upload validation
-- ✅ **Rate Limiting** - Rate limiting for requests
-- ✅ **Security Headers** - Automatic security headers
-- ✅ **IP Blocking** - Automatic IP blocking
-- ✅ **Security Monitoring** - Monitor and log threats
-- ✅ **And more...**
+### Core Security Protections
+- ✅ **Automatic Protection** - Just add one middleware and everything works!
+- ✅ **SQL Injection Protection** - Detect and prevent SQL injection attacks with pattern matching
+- ✅ **XSS Protection** - Filter malicious scripts, iframes, and JavaScript code
+- ✅ **Command Injection Protection** - Block dangerous system commands (exec, system, etc.)
+- ✅ **Path Traversal Protection** - Prevent directory traversal attacks (../, ..\\)
+- ✅ **CSRF Protection** - Enhanced CSRF protection with token rotation and double submit cookie
+- ✅ **XXE Protection** - Protect against XML External Entity attacks
+- ✅ **SSRF Protection** - Block Server-Side Request Forgery to internal networks
+- ✅ **IDOR Protection** - Validate resource ownership and prevent insecure direct object references
+
+### File & Upload Security
+- ✅ **File Upload Security** - Secure file validation with MIME type and extension checking
+- ✅ **Magic Bytes Validation** - Verify file content matches extension
+- ✅ **Executable File Blocking** - Automatically block dangerous file types
+- ✅ **Secure File Storage** - Automatic file renaming and secure directory storage
+
+### Authentication & Authorization
+- ✅ **Brute Force Protection** - Account lockout after failed login attempts
+- ✅ **Password Strength Validation** - Enforce strong password policies
+- ✅ **Session Security** - Enhanced session protection
+- ✅ **Authorization Policies** - Ready-to-use security policies
+
+### Rate Limiting & DDoS Protection
+- ✅ **Rate Limiting** - Advanced rate limiting per IP, user, or route
+- ✅ **IP Whitelist/Blacklist** - Manage trusted and blocked IPs
+- ✅ **Exponential Backoff** - Smart retry logic
+
+### Security Headers
+- ✅ **Content Security Policy (CSP)** - Prevent XSS and data injection
+- ✅ **Strict Transport Security (HSTS)** - Force HTTPS connections
+- ✅ **X-Frame-Options** - Prevent clickjacking attacks
+- ✅ **X-Content-Type-Options** - Prevent MIME type sniffing
+- ✅ **Referrer-Policy** - Control referrer information
+- ✅ **Permissions-Policy** - Control browser features
+
+### Monitoring & Logging
+- ✅ **Security Monitoring** - Real-time threat detection and logging
+- ✅ **Security Events** - Track all security-related events
+- ✅ **IP Blocking** - Automatic IP blocking for repeated threats
+- ✅ **Security Reports** - Generate comprehensive security reports
+- ✅ **Threat Statistics** - View security statistics and analytics
+
+### Input Validation
+- ✅ **Input Sanitization** - Clean all user inputs automatically
+- ✅ **HTML Tag Stripping** - Remove dangerous HTML tags
+- ✅ **SQL Keyword Filtering** - Remove SQL keywords from inputs
+- ✅ **Data Type Validation** - Validate input data types
+
+### Additional Features
+- ✅ **Helper Functions** - Easy-to-use helper functions
+- ✅ **Facade Support** - Clean API with Facade pattern
+- ✅ **Artisan Commands** - Security scanning, reporting, and management
+- ✅ **Event System** - Listen to security events
+- ✅ **Policy System** - Extensible security policies
+- ✅ **Validator Classes** - Reusable validators for all security checks
 
 ## ⚙️ Configuration (Optional)
 
