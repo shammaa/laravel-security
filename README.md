@@ -1,0 +1,304 @@
+# Laravel Security Package
+
+Comprehensive security package for Laravel - Automatically protects against all types of security vulnerabilities!
+
+## ⚡ Quick Installation (3 Steps Only!)
+
+```bash
+# 1. Install the package
+composer require shammaa/laravel-security
+
+# 2. Publish configuration (optional - everything works automatically)
+php artisan vendor:publish --tag=laravel-security-config
+
+# 3. Run migrations (for monitoring and logging)
+php artisan migrate
+```
+
+## 🚀 Usage - Super Easy!
+
+### Method 1: 100% Automatic (Easiest)
+
+Just add one middleware in `app/Http/Kernel.php` or `bootstrap/app.php`:
+
+```php
+// Laravel 11+
+protected $middleware = [
+    \Shammaa\LaravelSecurity\Http\Middleware\SecurityMiddleware::class,
+];
+
+// Or Laravel 10
+protected $middlewareGroups = [
+    'web' => [
+        \Shammaa\LaravelSecurity\Http\Middleware\SecurityMiddleware::class,
+    ],
+];
+```
+
+**That's it!** Now all your requests are automatically protected from:
+- ✅ SQL Injection
+- ✅ XSS
+- ✅ Command Injection
+- ✅ Path Traversal
+- ✅ And more...
+
+### Method 2: Using Helper Functions (Very Simple)
+
+```php
+// Sanitize any input
+$clean = security_sanitize($request->input('name'));
+
+// Filter XSS
+$safe = security_xss_filter($html);
+
+// Rate Limiting
+if (!security_rate_limit('api:' . $userId)) {
+    return response()->json(['error' => 'Too many requests'], 429);
+}
+```
+
+### Method 3: Using Facade (Simplest)
+
+```php
+use Shammaa\LaravelSecurity\Facades\Security;
+
+// Sanitize
+$clean = Security::sanitize($input);
+
+// Filter XSS
+$safe = Security::xssFilter($html);
+
+// Validate file
+if (Security::validateFile($file)) {
+    $path = Security::storeFile($file);
+}
+
+// Check password strength
+$result = Security::checkPassword($password);
+if (!$result['valid']) {
+    // $result['errors'] contains the errors
+}
+
+// Check if account is locked
+if (Security::isLocked($email)) {
+    return back()->withErrors(['email' => 'Account locked']);
+}
+
+// Record failed login attempt
+Security::recordFailedLogin($email);
+
+// Clear failed attempts on success
+Security::clearFailedLogins($email);
+```
+
+## 📋 Features
+
+- ✅ **Automatic Protection** - Just add one middleware!
+- ✅ **SQL Injection Protection** - Detect and prevent SQL injection attacks
+- ✅ **XSS Protection** - Protection against Cross-Site Scripting
+- ✅ **File Upload Security** - Secure file upload validation
+- ✅ **Rate Limiting** - Rate limiting for requests
+- ✅ **Security Headers** - Automatic security headers
+- ✅ **IP Blocking** - Automatic IP blocking
+- ✅ **Security Monitoring** - Monitor and log threats
+- ✅ **And more...**
+
+## ⚙️ Configuration (Optional)
+
+Everything works automatically! But if you want to customize, edit `config/security.php`:
+
+```php
+return [
+    // Enable/disable protection
+    'sql_injection' => [
+        'enabled' => true,  // true = enabled, false = disabled
+        'block_on_detect' => true,  // Auto-block on detection
+    ],
+    
+    'xss' => [
+        'enabled' => true,
+        'filter_input' => true,  // Filter inputs
+    ],
+    
+    // Or use .env
+    // SECURITY_SQL_INJECTION_ENABLED=true
+    // SECURITY_XSS_ENABLED=true
+];
+```
+
+## 🛠️ Commands
+
+### Security Scan
+
+```bash
+php artisan security:scan
+php artisan security:scan --fix  # Attempt to fix issues
+```
+
+### Generate Security Report
+
+```bash
+php artisan security:report
+php artisan security:report --days=60 --format=table
+```
+
+### Unblock IP
+
+```bash
+php artisan security:unblock 192.168.1.1
+```
+
+### Clean Security Logs
+
+```bash
+php artisan security:clean --days=30
+php artisan security:clean --days=30 --force  # Without confirmation
+```
+
+## 💡 Practical Examples
+
+### Example 1: File Upload Security (Super Easy!)
+
+```php
+// In Controller
+public function upload(Request $request)
+{
+    $file = $request->file('document');
+    
+    // Simple way - Helper Function
+    if (!security_validate_file($file)) {
+        return back()->withErrors(['file' => 'File not allowed']);
+    }
+    
+    // Secure storage
+    $path = security_store_file($file);
+    
+    // Or use Facade
+    if (Security::validateFile($file)) {
+        $path = Security::storeFile($file);
+    }
+    
+    return response()->json(['path' => $path]);
+}
+```
+
+### Example 2: Rate Limiting for API
+
+```php
+// In Controller or Middleware
+public function apiEndpoint(Request $request)
+{
+    $userId = auth()->id();
+    
+    // Rate limit: 100 requests per minute
+    if (!Security::rateLimit("api:{$userId}", 100, 1)) {
+        return response()->json([
+            'error' => 'Too many requests'
+        ], 429);
+    }
+    
+    // Rest of the code...
+}
+```
+
+### Example 3: Brute Force Protection (Super Easy!)
+
+```php
+// In LoginController
+public function login(Request $request)
+{
+    $email = $request->email;
+    
+    // Simple way - Helper Functions
+    if (security_is_locked($email)) {
+        return back()->withErrors(['email' => 'Account locked. Try again later.']);
+    }
+    
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        // Record failed attempt
+        security_record_failed_login($email);
+        return back()->withErrors(['email' => 'Invalid credentials']);
+    }
+    
+    // Success - clear failed attempts
+    security_clear_failed_logins($email);
+    
+    return redirect('/dashboard');
+    
+    // Or use Facade
+    // if (Security::isLocked($email)) { ... }
+    // Security::recordFailedLogin($email);
+    // Security::clearFailedLogins($email);
+}
+```
+
+### Example 4: Manual Input Sanitization
+
+```php
+// Sanitize any input
+$name = security_sanitize($request->input('name'));
+$email = security_sanitize($request->input('email'));
+
+// Or use Facade
+$name = Security::sanitize($request->input('name'));
+```
+
+### Example 5: Filter Output from XSS
+
+```php
+// In Blade
+{!! Security::xssFilter($user->bio) !!}
+
+// Or Helper
+{!! security_xss_filter($user->bio) !!}
+```
+
+## 📚 More Information
+
+### Policies
+
+The package includes ready-to-use policies that you can customize:
+- `SecurityPolicy` - General security operations
+- `FileUploadPolicy` - File upload permissions
+- `ApiSecurityPolicy` - API access control
+- `AdminSecurityPolicy` - Admin operations
+
+### Events
+
+The package fires events when threats are detected:
+- `SecurityThreatDetected` - When any threat is detected
+- `SqlInjectionAttempt` - SQL injection attempt
+- `XssAttempt` - XSS attempt
+- `BruteForceAttempt` - Brute force attack
+- `UnauthorizedAccessAttempt` - Unauthorized access attempt
+
+You can listen to these events:
+
+```php
+use Shammaa\LaravelSecurity\Events\SecurityThreatDetected;
+
+Event::listen(SecurityThreatDetected::class, function ($event) {
+    // Send email, notification, etc...
+    Mail::to('admin@example.com')->send(new SecurityAlert($event));
+});
+```
+
+## 🎯 Summary
+
+**Basic Usage:**
+1. Install the package
+2. Add one middleware
+3. Done! Everything works automatically
+
+**For Advanced Users:**
+- Use Helper Functions or Facade
+- Customize settings in `config/security.php`
+- Use Commands for monitoring and reports
+
+## 📄 License
+
+MIT
+
+## 👤 Author
+
+Shadi Shammaa

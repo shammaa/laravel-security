@@ -1,0 +1,14 @@
+/vendor/
+/node_modules/
+/.idea/
+/.vscode/
+*.log
+.DS_Store
+Thumbs.db
+composer.lock
+.phpunit.result.cache
+
+# Ignore specific MD files, but keep README.md
+README_AR.md
+QUICK_START.md
+
