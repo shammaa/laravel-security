@@ -183,6 +183,73 @@ return [
 ];
 ```
 
+### Whitelisting Routes for Admin Panels & WYSIWYG Editors
+
+If you're using admin panels with rich text editors (like CKEditor, TinyMCE) or DataTables, you may need to whitelist certain routes to bypass strict security checks.
+
+#### Option 1: Using Environment Variables (Recommended)
+
+Add these to your `.env` file:
+
+```env
+# Whitelist routes for input sanitization (comma-separated)
+SECURITY_INPUT_WHITELIST_ROUTES=admin/*,dashboard/posts/create,dashboard/posts/edit
+
+# Whitelist specific parameters that should not be sanitized
+SECURITY_INPUT_WHITELIST_PARAMS=content,description,body,html,editor_content
+
+# Whitelist routes for XSS filtering (for WYSIWYG editors)
+SECURITY_XSS_WHITELIST_ROUTES=admin/*,dashboard/*
+
+# Whitelist routes for security headers (for admin panels)
+SECURITY_HEADERS_WHITELIST_ROUTES=admin/*,dashboard/*
+```
+
+#### Option 2: Using Config File
+
+Edit `config/security.php`:
+
+```php
+'input' =&gt; [
+    'whitelist_routes' =&gt; ['admin/*', 'dashboard/posts/*'],
+    'whitelist_parameters' =&gt; ['content', 'description', 'body', 'html'],
+],
+
+'xss' =&gt; [
+    'whitelist_routes' =&gt; ['admin/*', 'dashboard/*'],
+],
+
+'headers' =&gt; [
+    'whitelist_routes' =&gt; ['admin/*', 'dashboard/*'],
+],
+```
+
+#### Example: CKEditor Setup
+
+```env
+# For CKEditor to work properly
+SECURITY_INPUT_WHITELIST_PARAMS=content,description,article_body
+SECURITY_XSS_WHITELIST_ROUTES=admin/articles/*,admin/pages/*
+SECURITY_HEADERS_WHITELIST_ROUTES=admin/*
+
+# Make CSP more permissive for admin panel
+SECURITY_HEADER_CSP="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.ckeditor.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
+```
+
+#### Example: DataTables Setup
+
+```env
+# For DataTables with server-side processing
+SECURITY_HEADERS_WHITELIST_ROUTES=admin/datatables/*,api/datatables/*
+```
+
+**Important Notes:**
+- Whitelist only admin routes that you trust
+- Use specific route patterns instead of wildcards when possible
+- Always validate user permissions before allowing access to whitelisted routes
+- Consider using middleware groups for better organization
+
+
 ## 🛠️ Commands
 
 ### Security Scan

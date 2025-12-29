@@ -11,7 +11,13 @@ return [
         'strip_tags' => env('SECURITY_STRIP_TAGS', true),
         'html_entities' => env('SECURITY_HTML_ENTITIES', true),
         'sql_keywords' => env('SECURITY_SQL_KEYWORDS', true),
-        'allowed_tags' => ['p', 'br', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li'],
+        'allowed_tags' => ['p', 'br', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'code', 'pre', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span'],
+        
+        // Whitelist: Routes that should bypass input sanitization (e.g., WYSIWYG editors)
+        'whitelist_routes' => explode(',', env('SECURITY_INPUT_WHITELIST_ROUTES', '')),
+        
+        // Whitelist: Request parameters that should not be sanitized (e.g., 'content', 'description')
+        'whitelist_parameters' => explode(',', env('SECURITY_INPUT_WHITELIST_PARAMS', 'content,description,body,html')),
     ],
 
     /*
@@ -62,6 +68,9 @@ return [
             '/<img[^>]+src[^>]*=.*javascript:/i',
             '/<link[^>]+href[^>]*=.*javascript:/i',
         ],
+        
+        // Whitelist: Routes that should bypass XSS filtering (e.g., admin content editors)
+        'whitelist_routes' => explode(',', env('SECURITY_XSS_WHITELIST_ROUTES', '')),
     ],
 
     /*
@@ -112,13 +121,15 @@ return [
     */
     'headers' => [
         'enabled' => env('SECURITY_HEADERS_ENABLED', true),
-        'csp' => env('SECURITY_HEADER_CSP', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"),
+        'csp' => env('SECURITY_HEADER_CSP', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"),
         'x_frame_options' => env('SECURITY_HEADER_X_FRAME_OPTIONS', 'DENY'),
         'x_content_type_options' => env('SECURITY_HEADER_X_CONTENT_TYPE_OPTIONS', 'nosniff'),
         'x_xss_protection' => env('SECURITY_HEADER_X_XSS_PROTECTION', '1; mode=block'),
         'strict_transport_security' => env('SECURITY_HEADER_HSTS', 'max-age=31536000; includeSubDomains'),
         'referrer_policy' => env('SECURITY_HEADER_REFERRER_POLICY', 'strict-origin-when-cross-origin'),
         'permissions_policy' => env('SECURITY_HEADER_PERMISSIONS_POLICY', 'geolocation=(), microphone=(), camera=()'),
+        // Whitelist: Routes that should bypass strict security headers (e.g., admin panels)
+        'whitelist_routes' => explode(',', env('SECURITY_HEADERS_WHITELIST_ROUTES', '')),
     ],
 
     /*
