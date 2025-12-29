@@ -23,9 +23,9 @@ Just add one middleware in `app/Http/Kernel.php` or `bootstrap/app.php`:
 
 ```php
 // Laravel 11+
-protected $middleware = [
-    \Shammaa\LaravelSecurity\Http\Middleware\SecurityMiddleware::class,
-];
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->append(\Shammaa\LaravelSecurity\Http\Middleware\SecurityMiddleware::class);
+});
 
 // Or Laravel 10
 protected $middlewareGroups = [
