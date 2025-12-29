@@ -54,7 +54,7 @@ class LaravelSecurityServiceProvider extends ServiceProvider
         $this->app->singleton(SecurityReportService::class);
 
         // Register main Security service
-        $this->app->singleton('security', function ($app) {
+        $this->app->singleton(Services\SecurityService::class, function ($app) {
             return new Services\SecurityService(
                 $app->make(InputSanitizerService::class),
                 $app->make(SqlInjectionDetector::class),
@@ -75,6 +75,9 @@ class LaravelSecurityServiceProvider extends ServiceProvider
                 config('security')
             );
         });
+
+        // Register alias for convenience
+        $this->app->alias(Services\SecurityService::class, 'security');
     }
 
     public function boot(): void
