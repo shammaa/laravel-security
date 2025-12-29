@@ -80,6 +80,12 @@ class SecurityMiddleware
             return false;
         }
 
+        // Check whitelist
+        $whitelist = config('security.ip_blocking.whitelist_ips', []);
+        if (in_array($ip, $whitelist)) {
+            return false;
+        }
+
         try {
             $blockedIp = \Shammaa\LaravelSecurity\Models\BlockedIp::where('ip', $ip)
                 ->where('is_blocked', true)
@@ -210,6 +216,12 @@ class SecurityMiddleware
      */
     protected function autoBlockIp(string $ip, string $reason): void
     {
+        // Check whitelist
+        $whitelist = config('security.ip_blocking.whitelist_ips', []);
+        if (in_array($ip, $whitelist)) {
+            return;
+        }
+
         try {
             $blockedIp = \Shammaa\LaravelSecurity\Models\BlockedIp::firstOrNew(['ip' => $ip]);
             $blockedIp->reason = $reason;

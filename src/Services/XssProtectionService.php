@@ -47,7 +47,7 @@ class XssProtectionService
         $filtered = preg_replace('/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/mi', '', $filtered);
 
         // Remove event handlers
-        $filtered = preg_replace('/on\w+\s*=\s*["\']?[^"\'>]*["\']?/i', '', $filtered);
+        $filtered = preg_replace('/\bon\w+\s*=\s*["\']?[^"\'>]*["\']?/i', '', $filtered);
 
         // Remove javascript: protocol
         $filtered = preg_replace('/javascript:/i', '', $filtered);

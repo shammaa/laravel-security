@@ -38,9 +38,8 @@ return [
             '/(\bUPDATE\b.*\bSET\b)/i',
             '/(\bDROP\b.*\bTABLE\b)/i',
             '/(\bEXEC\b|\bEXECUTE\b)/i',
-            '/(\bSCRIPT\b)/i',
-            '/(\bOR\b.*=.*)/i',
-            '/(\bAND\b.*=.*)/i',
+            '/(\bOR\b\s+(?:\d+|[\'"][^\'"]*[\'"])\s*=\s*(?:\d+|[\'"][^\'"]*[\'"]))/i',
+            '/(\bAND\b\s+(?:\d+|[\'"][^\'"]*[\'"])\s*=\s*(?:\d+|[\'"][^\'"]*[\'"]))/i',
             '/(\b--\b|\b#\b)/',
             '/(\b\/\*.*\*\/\b)/',
             '/(\b1\s*=\s*1\b)/i',
@@ -64,7 +63,7 @@ return [
             '/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/mi',
             '/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/mi',
             '/javascript:/i',
-            '/on\w+\s*=/i',
+            '/\bon\w+\s*=/i',
             '/<img[^>]+src[^>]*=.*javascript:/i',
             '/<link[^>]+href[^>]*=.*javascript:/i',
         ],
@@ -243,7 +242,7 @@ return [
         'block_after_attempts' => env('SECURITY_IP_BLOCK_AFTER_ATTEMPTS', 5),
         'block_duration' => env('SECURITY_IP_BLOCK_DURATION', 3600), // seconds
         'permanent_block' => env('SECURITY_IP_PERMANENT_BLOCK', false),
-        'whitelist_ips' => explode(',', env('SECURITY_IP_WHITELIST', '127.0.0.1')),
+        'whitelist_ips' => explode(',', env('SECURITY_IP_WHITELIST', '127.0.0.1,::1')),
     ],
 ];
 
