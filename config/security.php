@@ -3,6 +3,16 @@
 return [
     /*
     |--------------------------------------------------------------------------
+    | Excluded Routes
+    |--------------------------------------------------------------------------
+    | Routes that should completely bypass all security checks.
+    | Use this for routes that handle large content (e.g., AI APIs, webhooks).
+    | Supports wildcard patterns (e.g., 'api/ai/*', 'webhooks/*').
+    */
+    'excluded_routes' => explode(',', env('SECURITY_EXCLUDED_ROUTES', '')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Input Sanitization
     |--------------------------------------------------------------------------
     */

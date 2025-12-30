@@ -20,10 +20,39 @@ class SecurityMiddleware
     }
 
     /**
+     * Check if the current route is excluded from security checks.
+     */
+    protected function isRouteExcluded(Request $request): bool
+    {
+        $excludedRoutes = config('security.excluded_routes', []);
+        
+        // Remove empty values
+        $excludedRoutes = array_filter($excludedRoutes);
+        
+        if (empty($excludedRoutes)) {
+            return false;
+        }
+        
+        foreach ($excludedRoutes as $pattern) {
+            // Support wildcard patterns using Laravel's is() method
+            if ($request->is(trim($pattern))) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
      * Handle an incoming request.
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Check if current route is excluded from security checks
+        if ($this->isRouteExcluded($request)) {
+            return $next($request);
+        }
+
         // Check if IP is blocked
         if ($this->isIpBlocked($request->ip())) {
             return $this->blockedResponse($request);

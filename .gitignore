@@ -8,7 +8,6 @@ Thumbs.db
 composer.lock
 .phpunit.result.cache
 
-# Ignore specific MD files, but keep README.md
+# Ignore Arabic README (private)
 README_AR.md
-QUICK_START.md
 

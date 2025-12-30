@@ -249,6 +249,51 @@ SECURITY_HEADERS_WHITELIST_ROUTES=admin/datatables/*,api/datatables/*
 - Always validate user permissions before allowing access to whitelisted routes
 - Consider using middleware groups for better organization
 
+### Excluding Routes from All Security Checks
+
+If you have routes that need to completely bypass **all** security checks (e.g., AI APIs, webhooks, large content uploads), you can use the `excluded_routes` feature:
+
+#### Option 1: Using Environment Variables (Recommended)
+
+Add this to your `.env` file:
+
+```env
+# Exclude routes from ALL security checks (comma-separated)
+SECURITY_EXCLUDED_ROUTES=api/ai/*,api/webhooks/*,api/external/*
+```
+
+#### Option 2: Using Config File
+
+Edit `config/security.php`:
+
+```php
+'excluded_routes' => ['api/ai/*', 'api/webhooks/*', 'api/external/*'],
+```
+
+#### When to Use Excluded Routes
+
+Use `excluded_routes` when:
+- ✅ Sending large content to AI APIs (e.g., long text, recipes, articles)
+- ✅ Receiving webhooks from external services
+- ✅ Handling file uploads with custom validation
+- ✅ Processing data that may contain SQL-like keywords or special characters
+
+**⚠️ Security Warning:**
+- Only exclude routes that you absolutely trust
+- Implement your own validation for excluded routes
+- Never exclude user-facing routes without proper authentication
+- Use specific patterns instead of broad wildcards
+
+#### Example: AI API Integration
+
+```php
+// .env
+SECURITY_EXCLUDED_ROUTES=api/ai/*
+
+// Now your AI routes won't be blocked
+Route::post('/api/ai/rewrite', [AIController::class, 'rewrite']);
+Route::post('/api/ai/generate', [AIController::class, 'generate']);
+```
 
 ## 🛠️ Commands
 
